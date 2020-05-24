@@ -1,0 +1,4 @@
+file 'file:/home/valencia/Documents/proyectos/manim-tutorial/media/videos/shapes/1440p60/partial_movie_files/Shapes/00000.mp4'
+file 'file:/home/valencia/Documents/proyectos/manim-tutorial/media/videos/shapes/1440p60/partial_movie_files/Shapes/00001.mp4'
+file 'file:/home/valencia/Documents/proyectos/manim-tutorial/media/videos/shapes/1440p60/partial_movie_files/Shapes/00002.mp4'
+file 'file:/home/valencia/Documents/proyectos/manim-tutorial/media/videos/shapes/1440p60/partial_movie_files/Shapes/00003.mp4'
