@@ -20,6 +20,7 @@ class Activacion(Scene):
       
       if lastC!= None:
         animations.append(MoveAlongPath(c, lastC, run_time=t_f, rate_func=linear))
-      animations.append(MoveAlongPath(Dot(), c, run_time=t_f, rate_func=linear))
+      animations.append(MoveAlongPath(Dot(radius=0.04), c, run_time=t_f, rate_func=linear))
       lastC = c
     self.play(*animations)
+
