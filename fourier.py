@@ -20,7 +20,7 @@ class DFT:
 
       re = re/N
       im = im/N
-      freq = k
+      freq = PI*2*k/N
       amp = np.sqrt(re*re+im*im)
       phase = np.arctan2(re, im)
       y[k] = (re, im, freq, amp, phase)
@@ -40,7 +40,7 @@ class DFT:
       x = lambda t: r*np.cos(t*freq+phase)
       y = lambda t: -r*np.sin(t*freq+phase)
 
-      c=ParametricFunction(lambda t : np.array([x(t),y(t), 0]),t_min=-TAU,t_max=TAU, width=1, stroke_width=1)
+      c=ParametricFunction(lambda t : np.array([x(t),y(t), 0]),t_min=-TAU,t_max=TAU, width=1, stroke_width=1, color=BLUE)
       if lastC==None:
         c.shift(LEFT*5)
         animations.append(ShowCreation(c, run_time=0.1))
@@ -48,7 +48,7 @@ class DFT:
         animations.append(MoveAlongPath(c, lastC, run_time=t_f, rate_func=linear))
       animations.append(MoveAlongPath(Dot(radius=0.04), c, run_time=t_f, rate_func=linear))
       lastC = c
-    animations.append(MoveAlongPath(Dot(radius=0.1, color=RED), c, run_time=t_f, rate_func=linear))
+    animations.append(MoveAlongPath(Dot(radius=0.1, color=RED), lastC, run_time=t_f, rate_func=linear))
     self.lastC = lastC
     return animations
 
@@ -97,11 +97,11 @@ class Fourier(GraphScene):
   def construct(self):
     self.setup_axes(animate=True)
 
-    scale = 0.3
+    scale = 0.2
     self.y_max = self.y_max*(1/scale)
     self.y_min = self.y_min*(1/scale)
 
-    d = DFT([i for i in np.arange(10)], scale)
+    d = DFT([i for i in np.arange(40)], scale)
     animations = d.animations()
     c = d.lastC
     animations.append(floatingLine(8, c, run_time=20, rate_func=linear))

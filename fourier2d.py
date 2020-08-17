@@ -5,13 +5,14 @@ import numpy as np
 from manimlib.utils.rate_functions import linear
 import json
 
-t_f = 20
+t_f = 30
 
 class DFT:
   def __init__(self, x, **kwargs):
     kwargs.setdefault('scale', 1)
     kwargs.setdefault('phase', 0)
     self.scale = kwargs['scale']
+    self.phase = kwargs['phase']
     N = len(x)
     y = [None] * N
 
@@ -19,7 +20,7 @@ class DFT:
       re = 0
       im = 0
       for n in np.arange(N):
-        phi = (2*np.pi*k*n)/N
+        phi = (2*PI*k*n)/N
         re = re + x[n]*np.cos(phi)
         im = im - x[n]*np.sin(phi)
 
@@ -27,10 +28,10 @@ class DFT:
       im = im/N
       freq = k
       amp = np.sqrt(re*re+im*im)
-      phase = np.arctan2(re, im)+kwargs['phase']
+      phase = np.arctan2(im, re)+self.phase
       y[k] = (re, im, freq, amp, phase)
     
-    y.pop(0)
+    #y.pop(0)
     y.sort(reverse=True,key=lambda k: k[3])
     self.y = y
   
@@ -44,7 +45,7 @@ class DFT:
       x = lambda t: r*np.cos(t*freq+phase)
       y = lambda t: -r*np.sin(t*freq+phase)
 
-      c=ParametricFunction(lambda t : np.array([x(t),y(t), 0]),t_min=-TAU,t_max=TAU, width=1, stroke_width=1)
+      c=ParametricFunction(lambda t : np.array([x(t),y(t), 0]),t_min=-PI,t_max=PI, width=1, stroke_width=1)
       if lastC==None:
         c.shift([0,0,0]+shift)
         animations.append(ShowCreation(c, run_time=0.1))
@@ -92,34 +93,28 @@ class floatingLine(Animation):
 
 
 class Fourier(Scene):
-  CONFIG = {
-    "x_min" : -TAU,
-    "x_max" : TAU,
-    "y_min" : -PI,
-    "y_max" : PI,
-    "graph_origin" : RIGHT*2+DOWN*2 ,  
-  }
-
-
   def construct(self):
     x = []
     y = []
-    i = 0
-    with open('coors.json') as json_file:
+
+    with open('train.json') as json_file:
       data = json.load(json_file)
+      i = 0
       for coor in data:
-        if i%100==0:
+        if i%10==0:
           x.append(int(coor['x']))
           y.append(int(coor['y']))
-          i = i + 1
+        i = i + 1
+    for i in np.arange(-PI, PI, 1):
+      print(i)
+      x.append(np.cos(i)*3)
+      y.append(np.sin(i)*3)
 
 
-    scale = 0.5
-    self.y_max = self.y_max*(1/scale)
-    self.y_min = self.y_min*(1/scale)
+    scale = 0.25
 
-    dY = DFT([i for i in np.arange(3)], scale=scale)
-    dX = DFT([i for i in np.arange(3)], scale=scale, phase=-np.pi/2)
+    dY = DFT(y, scale=scale)
+    dX = DFT(x, scale=scale, phase=-PI/2)
 
     animationsY = dY.animations()
     c = dY.lastC
@@ -129,8 +124,8 @@ class Fourier(Scene):
     c = dX.lastC
     animationsX.append(floatingLine(Line([0,0,0], [0,2*TAU,0]), c, UP, run_time=t_f, rate_func=linear))
 
-    #dibujo=ParametricFunction(lambda t : np.array([t,dY.imaginary(t), 0]),t_min=-TAU,t_max=TAU)
-    dibujo=ParametricFunction(lambda t : np.array([dX.real(t),dY.imaginary(t), 0]),t_min=-TAU,t_max=TAU)
+    dibujo=ParametricFunction(lambda t : np.array([dX.real(t),dY.imaginary(t), 0]),t_min=-PI,t_max=PI)
+    #dibujo2=ParametricFunction(lambda t : np.array([t, dX.real(t)+2, 0]),t_min=-PI,t_max=PI)
 
     self.play(*animationsY, 
               *animationsX, 
