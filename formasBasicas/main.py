@@ -9,7 +9,7 @@ class Shapes(Scene):
     fadeOutCircle = FadeOut(circulo) # Animación de desaparición 
     self.play(fadeOutCircle) # Mostrar la animación
 
-    rect = Rectangle(color="blue") # Rectangulo con color
+    rect = Rectangle(color="blue", height=3, width=1) # Rectangulo con color
     # rect = Rectangle(color="#0000FF") # Rectangulo con color en hexadecimal
     self.play(ShowCreation(rect))
     self.play(FadeOut(rect))
